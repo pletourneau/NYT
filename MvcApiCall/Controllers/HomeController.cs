@@ -1,22 +1,28 @@
 ﻿using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MvcApiCall.Models;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+
 
 namespace MvcApiCall.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-
+    private readonly string _apikey;
     public HomeController(ILogger<HomeController> logger)
     {
         _logger = logger;
+        _apikey = configuration["NYT"];
     }
 
     public IActionResult Index()
     {
-        return View();
+        Task<string> allArticles = Article.GetArticles(_apikey);
+        return View(allArticles);
     }
+
 
     public IActionResult Privacy()
     {
